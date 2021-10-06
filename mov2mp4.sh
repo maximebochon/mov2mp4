@@ -2,7 +2,7 @@
 #
 # Author: Maxime BOCHON
 # Created: 2021-09-20
-# Updated: 2021-09-20
+# Updated: 2021-10-06
 #
 # Description:
 #   Convert QuickTime movie files to MPEG-4 files losslessly, using FFmpeg.
