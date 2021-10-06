@@ -19,8 +19,6 @@ EXIT_CODE_MISSING_COMMAND=255
 
 EXPECTED_FILE_TYPE_MARKER="Apple QuickTime movie"
 
-LOG_FILE="/tmp/mov2mp4.$$.log"
-
 
 # Check presence of required commands
 for cmd in ${REQUIRED_COMMANDS}; do
@@ -38,11 +36,13 @@ for movFile in "$@"; do
 	
 	# Convert MOV file to MP4 file losslessly using FFmpeg
 	mp4File="${movFile%.*}.mp4"
-	ffmpeg -loglevel warning -i "${movFile}" -c:a copy -c:v copy "${mp4File}" >>"${LOG_FILE}" 2>&1 \
-	|| { echo "${movFile}: FFmpeg exited with error code $? (see log file: ${LOG_FILE})"; continue; }
+	ffmpeg -loglevel error -i "${movFile}" -c:a copy -c:v copy "${mp4File}" \
+	|| { echo "${movFile}: FFmpeg exited with error code $?"; continue; }
 	
 	# Display converted file name if successful
 	echo "${movFile} -> ${mp4File}"
 done
 
-# TODO: display error messages in red, success messages in green.
+# TODO: display error messages in red, success messages in green, or use emojis.
+
+# TODO: try to find a way to keep FFmpeg error level for displayed logs, and another for a temporary log file (report) that could be useful on error
