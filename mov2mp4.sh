@@ -19,11 +19,14 @@ EXIT_CODE_MISSING_COMMAND=255
 
 EXPECTED_FILE_TYPE_MARKER="Apple QuickTime movie"
 
+OK='\033[0;32m' # green color
+KO='\033[0;31m' # red color
+NC='\033[0m'    # no color
 
 # Check presence of required commands
 for cmd in ${REQUIRED_COMMANDS}; do
 	command -v "${cmd}" >/dev/null 2>&1 \
-	|| { echo >&2 "$0 requires command: "${cmd}; exit ${EXIT_CODE_MISSING_COMMAND}; }
+	|| { echo -e >&2 "${KO}$0 requires command: "${cmd}"${NC}"; exit ${EXIT_CODE_MISSING_COMMAND}; }
 done
 
 # Process each QuickTime file
@@ -32,17 +35,15 @@ for movFile in "$@"; do
 	# Check real file type
 	realFileType=$(file --brief "${movFile}")
 	echo "${realFileType}" | grep --quiet "${EXPECTED_FILE_TYPE_MARKER}" \
-	|| { echo >&2 "${movFile}: not a valid Apple QuickTime movie file (${realFileType})"; continue; }
+	|| { echo -e >&2 "${KO}${movFile}: not a valid Apple QuickTime movie file (${realFileType})${NC}"; continue; }
 	
 	# Convert MOV file to MP4 file losslessly using FFmpeg
 	mp4File="${movFile%.*}.mp4"
 	ffmpeg -loglevel error -i "${movFile}" -c:a copy -c:v copy "${mp4File}" \
-	|| { echo "${movFile}: FFmpeg exited with error code $?"; continue; }
+	|| { echo -e "${KO}${movFile}: FFmpeg exited with error code $?${NC}"; continue; }
 	
 	# Display converted file name if successful
-	echo "${movFile} -> ${mp4File}"
+	echo -e "${OK}${movFile} -> ${mp4File}${NC}"
 done
-
-# TODO: display error messages in red, success messages in green, or use emojis.
 
 # TODO: try to find a way to keep FFmpeg error level for displayed logs, and another for a temporary log file (report) that could be useful on error
