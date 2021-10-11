@@ -2,7 +2,7 @@
 #
 # Author: Maxime BOCHON
 # Created: 2021-09-20
-# Updated: 2021-10-06
+# Updated: 2021-10-11
 #
 # Description:
 #   Convert QuickTime movie files to MPEG-4 files losslessly, using FFmpeg.
@@ -39,7 +39,7 @@ for movFile in "$@"; do
 	
 	# Convert MOV file to MP4 file losslessly using FFmpeg
 	mp4File="${movFile%.*}.mp4"
-	ffmpeg -loglevel error -i "${movFile}" -c:a copy -c:v copy "${mp4File}" \
+	ffmpeg -loglevel error -i "${movFile}" -c copy "${mp4File}" \
 	|| { echo -e "${KO}${movFile}: FFmpeg exited with error code $?${NC}"; continue; }
 	
 	# Display converted file name if successful
