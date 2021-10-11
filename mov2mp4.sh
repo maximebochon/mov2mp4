@@ -39,7 +39,7 @@ for movFile in "$@"; do
 	
 	# Convert MOV file to MP4 file losslessly using FFmpeg
 	mp4File="${movFile%.*}.mp4"
-	ffmpeg -loglevel error -i "${movFile}" -c copy "${mp4File}" \
+	ffmpeg -loglevel error -i "${movFile}" -c copy -map_metadata 0 -movflags use_metadata_tags "${mp4File}" \
 	|| { echo -e "${KO}${movFile}: FFmpeg exited with error code $?${NC}"; continue; }
 	
 	# Display converted file name if successful
